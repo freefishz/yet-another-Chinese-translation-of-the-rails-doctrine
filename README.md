@@ -151,6 +151,56 @@ Rails 的思路是，通过让从业者尽早地创建真正有价值的东西�
 
 ## 推崇优美的代码
 
+写代码并不仅仅是为了让计算机或其他程序员易于理解，而且还要享受那种沐浴在优美代码中的愉悦感。从美学角度来说，令人愉悦的代码本身就很有价值，应该值得我们花精力去追求。这并不意味着优美的代码应该胜过其他考量，但至少应该在优先考量中占有一席之地。
+
+那么什么才算优美的代码呢？在 Ruby 中，通常指的是 Ruby 固有语法和自定义 DSL 力量的交集。这是一条模糊的定义，但非常值得一试。
+
+下面是一个取自 Active Record 的简单例子：
+
+
+```rb
+class Project < ApplicationRecord
+  belongs_to :account
+  has_many :participants, class_name: 'Person'
+  validates_presence_of :name
+end
+```
+
+它看起来和DSL非常相似，其实不过是一个类定义，加上三个带 symbol 参数和选项的类方法调用。这里并没有什么魔幻的东西，不过确实优美而又简洁。简单几行声明就带来了如此强大的洪荒之力。
+
+这种优美部分应该归功于之前提到过的那些原则，如约定优于配置。 当调用 `belongs_to :account` 
+时，我们假定 projects 表中存在一个名字为 account_id 的外键。当必须为 partcipants 关联指定 class_name 为 Person 时，我们只需定义 Person 类即可，并可以由此推断出外键和其它相关设定。
+
+下面是另一个取自数据库迁移系统的例子：
+
+```rb
+class CreateAccounts < ActiveRecord::Migration
+  def change
+    create_table :accounts do |t|
+      t.integer :queenbee_id
+      t.timestamps
+    end
+  end
+end
+```
+
+这个例子体现了框架威力的精髓。这里程序员遵循某种约定定义了一个类，这个类继承自 `ActiveRecord::Migration` 并实现了一个 change 方法。剩下的事情就可以交给框架去处理了，并且框架知道该调用这个change方法来处理。
+
+这样程序员只需要写很少的代码就可以很好地完成工作了。上述代码不仅支持通过调用 `rails db:migrate` 
+为数据库添加一张新表，同时也支持通过调用另外一个命令从数据库中删除这张表。这和工程师自己实现这些功能，并将它们整合为工作流的方式完全不同。
+
+优美的代码有时看起来也会显得晦涩难懂。但优美的代码不应该是为了尽可能地短小精干，而应该更加关注阅读的流畅性。
+
+以下两条语句是等价的：
+
+```rb
+if people.include? person
+...      
+if person.in? people
+```
+
+但它们在语境和侧重点上存在细微的差异。第一条语句侧重点在集合，因为它是主语。第二条语句中，主语明显是 person。这两条语句在长度上并没有太大的差别，但是我认为第二条要优美的多，特别是当它用在判断条件是关于 person 的时候，这会让我感到由衷的开心。
+
 
 ## 提供开发利器
 
